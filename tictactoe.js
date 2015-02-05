@@ -119,6 +119,11 @@ var Player = function (token) {
 
 
 var CpuPlayer = function (token) {
+  function think(callback) {
+    setTimeout(function() {
+      callback();
+    }, 700);
+  }
   return {
     human: false,
     name: 'CPU ' + token,
@@ -134,10 +139,10 @@ var CpuPlayer = function (token) {
       });
       var move = _.sample(moves);
 
-      setTimeout(function() {
+      think(function() {
         moveBoard.setToken(token, move.x, move.y);
         callback();
-      }, 500);
+      });
     }
   };
 };
@@ -214,11 +219,12 @@ var Game = function (events) {
       } else {
         if (player.human) {
           lines = lines.concat(BoardView(moveBoard, cursor.overlayBoard()).view());
+          lines.push(player.name + ', it is your turn');
+
         } else {
           lines = lines.concat(BoardView(moveBoard).view());
+          lines.push('Hmm...');
         }
-
-        lines.push(player.name + ', it is your turn');
       }
       return lines;
     },
